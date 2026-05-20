@@ -21,14 +21,24 @@
 
       <nav class="mode-grid">
         <a href="demo.html" class="card demo" data-link="demo">
-          <span class="role">Headset</span>
-          <h2>Start Demo</h2>
-          <p>Open this on the AR glasses. A fullscreen HUD shows the verdict for each part as the operator taps A/B/C on the controller. The see-through lenses overlay the HUD onto the real parts on the table.</p>
+          <span class="role">QC · Headset</span>
+          <h2>Start QC Demo</h2>
+          <p>Inspection demo. The participant picks up one of three prepared parts; the operator or QR detection fires the matching verdict — PASS, REWORK, or SCRAP.</p>
         </a>
         <a href="control.html" class="card control" data-link="control">
-          <span class="role">Operator</span>
-          <h2>Controller</h2>
-          <p>Open on a second device (laptop or phone). Three big A/B/C buttons trigger the verdicts in the headset over WebRTC.</p>
+          <span class="role">QC · Operator</span>
+          <h2>QC Controller</h2>
+          <p>Second device for the QC demo. Three A/B/C buttons trigger the verdicts in the headset over WebRTC.</p>
+        </a>
+        <a href="builder.html" class="card demo" data-link="builder">
+          <span class="role">Builder · Headset</span>
+          <h2>Start Builder</h2>
+          <p>Assembly-training demo. The participant attaches each sub-piece with bolts, holds the finished component up; the camera reads the QR exposed by the chosen orientation and scores PASS or FAIL with rework guidance.</p>
+        </a>
+        <a href="builder-control.html" class="card control" data-link="builder-control">
+          <span class="role">Builder · Operator</span>
+          <h2>Builder Controller</h2>
+          <p>Second device for the Builder demo. Six PASS/FAIL × A/B/C buttons + SCAN. Use when QR detection isn't available (e.g. plain browser, no ML&nbsp;Kit).</p>
         </a>
         <a href="diag.html" class="card setup" data-link="diag">
           <span class="role">Diagnostic</span>

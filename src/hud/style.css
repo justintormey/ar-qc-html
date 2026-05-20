@@ -159,6 +159,7 @@ html, body {
 .verdict-row.pass   { color: var(--pass); }
 .verdict-row.rework { color: var(--rework); }
 .verdict-row.scrap  { color: var(--scrap); }
+.verdict-row.fail   { color: var(--scrap); }
 
 /* Cue strip — short, bright, action-oriented */
 .cue {
@@ -176,6 +177,22 @@ html, body {
 .cue.pass   { border-color: var(--pass); color: var(--pass); }
 .cue.rework { border-color: var(--rework); color: var(--rework); }
 .cue.scrap  { border-color: var(--scrap); color: var(--scrap); }
+.cue.fail   { border-color: var(--scrap); color: var(--scrap); }
+
+/* Builder Instructions list */
+.instructions-list {
+  list-style-position: inside;
+  padding: 0;
+  margin: 0.8rem 0 0;
+  font-size: 1.1rem;
+  line-height: 1.55;
+  color: var(--hud-text);
+}
+.instructions-list li {
+  padding: 0.3rem 0;
+  border-bottom: 1px dashed var(--hud-border);
+}
+.instructions-list li:last-child { border-bottom: none; }
 @keyframes pulse {
   0%, 100% { box-shadow: 0 0 0 0 currentColor; opacity: 1; }
   50%      { box-shadow: 0 0 24px -8px currentColor; opacity: 0.85; }
@@ -374,9 +391,11 @@ html, body {
   font-weight: 700;
   margin-top: 0.4rem;
 }
-.stat.pass .value { color: var(--pass); }
-.stat.rework .value { color: var(--rework); }
-.stat.scrap .value { color: var(--scrap); }
+.stat.pass .value    { color: var(--pass); }
+.stat.rework .value  { color: var(--rework); }
+.stat.scrap .value   { color: var(--scrap); }
+.stat.fail .value    { color: var(--scrap); }
+.stat.neutral .value { color: var(--hud-dim); }
 .cycle-time {
   text-align: center;
   margin-top: 1.2rem;

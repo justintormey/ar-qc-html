@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <base href="/ar-qc/" />
+    <title>AR Builder — Controller</title>
+    <link rel="stylesheet" href="/src/style.css" />
+  </head>
+  <body>
+    <main class="mode-page">
+      <section class="mode-card">
+        <span class="badge">Operator controller</span>
+        <h1>AR Builder Controller</h1>
+
+        <div class="conn-pill" id="conn-pill">
+          <span class="dot"></span>
+          <div class="conn-text">
+            <strong id="conn-headline">Connecting…</strong>
+            <span id="conn-detail" class="muted">Initializing transport</span>
+          </div>
+        </div>
+
+        <p class="instruction">
+          <strong>SCAN</strong> starts the scan animation while the participant assembles. Verdicts fire automatically when the camera reads a QR. The six manual buttons below let you fire verdicts directly when QR detection isn't available (e.g. the HTML demo running in a browser without ML&nbsp;Kit). <strong>End Demo</strong> shows the summary.
+        </p>
+
+        <button id="scan" class="btn-scan">▶ SCAN</button>
+
+        <div class="control-grid">
+          <button id="pass-a" class="control-btn a">PART A<br/><small>Pass</small></button>
+          <button id="pass-b" class="control-btn a">PART B<br/><small>Pass</small></button>
+          <button id="pass-c" class="control-btn a">PART C<br/><small>Pass</small></button>
+        </div>
+        <div class="control-grid" style="margin-top: 0.5rem">
+          <button id="fail-a" class="control-btn c">PART A<br/><small>Fail</small></button>
+          <button id="fail-b" class="control-btn c">PART B<br/><small>Fail</small></button>
+          <button id="fail-c" class="control-btn c">PART C<br/><small>Fail</small></button>
+        </div>
+
+        <div class="control-aux">
+          <button id="end-demo" class="btn ghost">End Demo</button>
+          <button id="reset" class="btn ghost">Reset to Welcome</button>
+        </div>
+
+        <p class="status" id="status">Transport: connecting…</p>
+        <div class="event-log" id="log"></div>
+      </section>
+    </main>
+    <script type="module" src="/src/builder-control.js"></script>
+  </body>
+</html>

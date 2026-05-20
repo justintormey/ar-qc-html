@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <base href="/ar-qc/" />
+    <title>AR Builder — HUD</title>
+    <link rel="stylesheet" href="src/hud/style.css" />
+  </head>
+  <body>
+    <!-- Persistent chips -->
+    <div id="status-chip">Loading</div>
+    <div id="conn-chip">
+      <span class="dot"></span>
+      <span id="conn-text">connecting</span>
+    </div>
+
+    <!-- Scan animation overlay -->
+    <div id="scan-overlay">
+      <div class="scan-haze"></div>
+      <div class="scan-line"></div>
+    </div>
+
+    <!-- Main HUD container -->
+    <div id="hud"></div>
+
+    <script type="module" src="src/builder.js"></script>
+  </body>
+</html>
