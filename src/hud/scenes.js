@@ -50,8 +50,8 @@ export function partAScene() {
     part: 'A',
     lines: [
       ['Surface finish', 'smooth, no defects'],
-      ['Vent holes',     '6 / 6 present'],
-      ['Warp',           '0.0 mm (in tolerance)'],
+      ['Vent openings',  '9 / 9 present'],
+      ['Warp',           '0.04 mm (in tolerance)'],
     ],
     verdictText: 'PASS',
     verdictSymbol: '✓',
@@ -70,7 +70,7 @@ export function partBScene() {
   const left = verdictPanel({
     part: 'B',
     lines: [
-      ['Vent holes',     '0 / 6 detected'],
+      ['Vent openings',  '0 / 6 detected'],
       ['Warp',           '1.8 mm at base'],
       ['Surface finish', 'acceptable'],
       ['Layer adhesion', 'within tolerance'],
@@ -106,7 +106,7 @@ export function partCScene() {
     lines: [
       ['Surface finish', 'extruder blobs, stringing'],
       ['Layer adhesion', 'failed'],
-      ['Vent holes',     'obstructed by filament'],
+      ['Vent openings',  '0 / 6 detected'],
       ['Defects',        '12+ flagged'],
     ],
     verdictText: 'SCRAP',
