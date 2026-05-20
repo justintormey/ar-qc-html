@@ -1,6 +1,6 @@
 # AR QC Station — HTML demo
 
-A browser-based AR demonstration of a "quality-control inspection station" for use on AR smart glasses with see-through waveguide displays (built and tested on a Digilens Argo, but works on any modern browser with WebRTC). One operator runs a laptop **controller**; another participant wears the **headset** showing a fullscreen HUD. As the participant picks up small metal parts on the table, the operator taps `PART A` / `PART B` / `PART C` and the headset plays the matching inspection verdict — PASS, REWORK, or SCRAP — with supporting detail panels and a sweeping cyan scan-line.
+A browser-based AR demonstration of a "quality-control inspection station" for use on AR smart glasses with see-through waveguide displays (built and tested on a Digilens Argo, but works on any modern browser with WebRTC). One operator runs a laptop **controller**; another participant wears the **headset** showing a fullscreen HUD. As the participant picks up small 3D-printed parts on the table, the operator taps `PART A` / `PART B` / `PART C` and the headset plays the matching inspection verdict — PASS, REWORK, or SCRAP — with supporting detail panels and a sweeping cyan scan-line.
 
 There's a [native Android sibling project](https://github.com/justintormey/ar-qc-android) (`ar-qc-android`) that ports this same flow to a Kotlin/Compose APK with real on-device camera + ML Kit QR detection. The two clients can interoperate over the same WebRTC room.
 
@@ -25,7 +25,7 @@ The flow:
 2. Participant opens the landing page on the headset, types the same PIN, opens **Start Demo**.
 3. Both devices show a green "connected" pill at the top-right within ~5 seconds.
 4. Operator taps **SCAN** → headset shows the scan animation (cyan corner brackets + sweeping line).
-5. Participant picks up any of the three metal parts on the table.
+5. Participant picks up any of the three 3D-printed parts on the table.
 6. Operator decides which verdict applies (A / B / C) and taps the matching button → headset shows the verdict overlay.
 7. Repeat until done; tap **End Demo** for a summary.
 
@@ -131,7 +131,7 @@ See [`infra/README.md`](infra/README.md) for the one-time IAM role setup.
 
 The HTML demo is the **lowest-friction path**: any browser, any device, any operating system, no install. It ships content as URLs.
 
-But on the Digilens Argo specifically, Firefox is the default browser and its `getUserMedia` implementation hangs indefinitely on this hardware (no error, no prompt, no resolve — confirmed across multiple constraint shapes). So the HTML version can't show a live camera feed inside the scanning view. The Argo's see-through display compensates: the operator's hand and the metal parts are visible *through the lenses* in the empty space between our HUD overlays, which makes the demo feel AR even without a video element.
+But on the Digilens Argo specifically, Firefox is the default browser and its `getUserMedia` implementation hangs indefinitely on this hardware (no error, no prompt, no resolve — confirmed across multiple constraint shapes). So the HTML version can't show a live camera feed inside the scanning view. The Argo's see-through display compensates: the operator's hand and the 3D-printed parts are visible *through the lenses* in the empty space between our HUD overlays, which makes the demo feel AR even without a video element.
 
 The native Android sibling (`ar-qc-android`) adds: real CameraX preview as the scanning background, real on-device ML Kit QR detection that fires verdicts automatically, and access to the platform's full camera + sensor stack. Same WebRTC protocol, same controller, same flow — but with the "real CV" beat that the HTML can't deliver inside Firefox.
 

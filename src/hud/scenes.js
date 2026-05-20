@@ -14,7 +14,7 @@ export function welcomeScene() {
   const el = mkScene();
   const panel = mk('div', 'panel title-only');
   panel.appendChild(mk('div', 'subheading', 'QC Station 3'));
-  panel.appendChild(mk('h1', 'heading', 'Job 471471 — 16-ga bracket inspection'));
+  panel.appendChild(mk('h1', 'heading', 'Job 471471 — additive part inspection'));
   panel.appendChild(mk('p', '', 'Three parts in front of you.'));
   panel.appendChild(mk('p', '', 'Three verdicts: pass, rework, scrap.'));
   panel.appendChild(mk('p', '', 'The glasses do the analysis. You make the call.'));
@@ -49,9 +49,9 @@ export function partAScene() {
   el.appendChild(verdictPanel({
     part: 'A',
     lines: [
-      ['Bend angle',  '90.0° ± 0.1°'],
-      ['Surface',     'clean, no defects'],
-      ['Dimensions',  'within tolerance'],
+      ['Surface finish', 'smooth, no defects'],
+      ['Vent holes',     '6 / 6 present'],
+      ['Warp',           '0.0 mm (in tolerance)'],
     ],
     verdictText: 'PASS',
     verdictSymbol: '✓',
@@ -70,10 +70,10 @@ export function partBScene() {
   const left = verdictPanel({
     part: 'B',
     lines: [
-      ['Bend angle',  '75.4°'],
-      ['Target',      '90.0°'],
-      ['Deviation',   '−14.6° underbend'],
-      ['Surface',     'clean'],
+      ['Vent holes',     '0 / 6 detected'],
+      ['Warp',           '1.8 mm at base'],
+      ['Surface finish', 'acceptable'],
+      ['Layer adhesion', 'within tolerance'],
     ],
     verdictText: 'REWORK',
     verdictSymbol: '⚠',
@@ -82,11 +82,11 @@ export function partBScene() {
   split.appendChild(left);
 
   const ghost = mk('div', 'ghost-panel');
-  ghost.appendChild(mk('div', 'label', 'TARGET PROFILE'));
+  ghost.appendChild(mk('div', 'label', 'REFERENCE GEOMETRY'));
   const canvas = mk('canvas');
   canvas.width = 320; canvas.height = 240;
   ghost.appendChild(canvas);
-  ghost.appendChild(mk('div', 'delta', 'Δ −14.6°'));
+  ghost.appendChild(mk('div', 'delta', 'Warp 1.8mm'));
   split.appendChild(ghost);
 
   el.appendChild(split);
@@ -104,9 +104,10 @@ export function partCScene() {
   el.appendChild(verdictPanel({
     part: 'C',
     lines: [
-      ['Bend angle',         '88.2° (in tolerance)'],
-      ['Surface',            '4 defects detected'],
-      ['Stress fracture',    'risk: HIGH'],
+      ['Surface finish', 'extruder blobs, stringing'],
+      ['Layer adhesion', 'failed'],
+      ['Vent holes',     'obstructed by filament'],
+      ['Defects',        '12+ flagged'],
     ],
     verdictText: 'SCRAP',
     verdictSymbol: '✕',
