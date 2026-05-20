@@ -15,9 +15,9 @@ export function welcomeScene() {
   const el = mkScene();
   const panel = mk('div', 'panel title-only');
   panel.appendChild(mk('div', 'subheading', 'AR Assembly Trainer'));
-  panel.appendChild(mk('h1', 'heading', 'Job 526526 — bracket sub-assembly'));
-  panel.appendChild(mk('p', '', 'Three components to assemble.'));
-  panel.appendChild(mk('p', '', 'Attach the sub-piece. Hold up for inspection.'));
+  panel.appendChild(mk('h1', 'heading', 'Job 526526 — angle-bracket sub-assembly'));
+  panel.appendChild(mk('p', '', 'Four 3D-printed angle brackets — A, B, C, D.'));
+  panel.appendChild(mk('p', '', 'Three steps. Scan after each.'));
   panel.appendChild(mk('p', '', 'Orientation matters — flip if you fail.'));
 
   el.appendChild(panel);
@@ -29,21 +29,54 @@ export function welcomeScene() {
 // Shown after Welcome and after each verdict (PASS → next part, FAIL → rework).
 // The participant reads these while physically assembling, then clicks SCAN
 // (in-headset wheel-click, OR operator-controller SCAN button).
-export function instructionsScene({ partLabel = 'next part' } = {}) {
+const STEP_CARDS = {
+  A: {
+    header: 'STEP 1 of 3 — ATTACH A + B',
+    title:  'Form the T',
+    steps: [
+      'Pick up brackets A and B and the velcro tabs attached to each.',
+      'Press A and B together face-to-face using the velcro tabs.',
+      'Align the end channel flanges so they face AWAY from each other.',
+      'The two pieces should form a T-shape.',
+      'Hold the assembly up to the lens and scan.',
+    ],
+  },
+  B: {
+    header: 'STEP 2 of 3 — ATTACH C TO B',
+    title:  'Tie C onto B',
+    steps: [
+      'Pick up bracket C and the supplied string.',
+      'Tie C to bracket B using the string — secure but not over-tightened.',
+      'Position C so its end channel flange points AWAY from the center of the assembly.',
+      'Hold the assembly up to the lens and scan.',
+    ],
+  },
+  C: {
+    header: 'STEP 3 of 3 — ATTACH D',
+    title:  'Mount D opposing C',
+    steps: [
+      'Pick up bracket D and use the velcro tabs already attached.',
+      'Press D onto the assembly with its velcro tabs.',
+      "Position D so its channel flange points AWAY from C's channel flange (opposing sides).",
+      'Hold the assembly up so BOTH the B-face and C-face QRs are visible.',
+      'Scan — pass requires BP and CP both in frame.',
+    ],
+  },
+};
+
+export function instructionsScene({ partLabel = 'A' } = {}) {
+  const key = String(partLabel).trim().slice(-1).toUpperCase();
+  const card = STEP_CARDS[key] || STEP_CARDS.A;
   const el = mkScene();
   const panel = mk('div', 'panel');
-  panel.appendChild(mk('div', 'subheading', `ASSEMBLY — ${partLabel}`));
-  panel.appendChild(mk('h2', 'heading', 'Steps'));
+  panel.appendChild(mk('div', 'subheading', card.header));
+  panel.appendChild(mk('h2', 'heading', card.title));
   const list = mk('ol', 'instructions-list');
-  list.appendChild(mk('li', '', 'Pick up the sub-piece + 2 bolts.'));
-  list.appendChild(mk('li', '', 'Align the sub-piece with the bolt pattern on the base.'));
-  list.appendChild(mk('li', '', 'Orient it so the spec face points outward (the recessed corner = up).'));
-  list.appendChild(mk('li', '', 'Install both bolts and finger-tighten.'));
-  list.appendChild(mk('li', '', 'Hold the finished assembly up to the lens.'));
+  for (const s of card.steps) list.appendChild(mk('li', '', s));
   panel.appendChild(list);
   el.appendChild(panel);
   el.appendChild(mk('div', 'scan-hint', 'Awaiting moderator — click SCAN when ready'));
-  return { el, status: 'Assembly — read steps, then SCAN' };
+  return { el, status: card.header };
 }
 
 // ─── Scanning ─────────────────────────────────────────────────────────
@@ -62,44 +95,100 @@ export function scanningScene() {
 }
 
 // ─── Verdict — PASS ────────────────────────────────────────────────────
+const PASS_SPECS = {
+  A: {
+    stepLabel: 'STEP 1 — A + B',
+    lines: [
+      ['Velcro',   'both tabs engaged'],
+      ['Flanges',  'aligned, facing outward'],
+      ['Shape',    'T-form verified'],
+    ],
+    cue: 'Step 1 complete — assembly to spec.',
+  },
+  B: {
+    stepLabel: 'STEP 2 — C ONTO B',
+    lines: [
+      ['String tie', 'secure'],
+      ['Position',   'C joined to B'],
+      ['Flange',     'away from center'],
+    ],
+    cue: 'Step 2 complete — assembly to spec.',
+  },
+  C: {
+    stepLabel: 'STEP 3 — D',
+    lines: [
+      ['Velcro',   'tabs engaged'],
+      ['Flange',   "opposite C's flange"],
+      ['QR check', 'BP + CP both visible'],
+    ],
+    cue: 'Step 3 complete — full assembly to spec.',
+  },
+};
+
 export function verdictPassScene({ part }) {
+  const key = String(part).trim().slice(-1).toUpperCase();
+  const spec = PASS_SPECS[key] || PASS_SPECS.A;
   const el = mkScene();
   el.appendChild(builderVerdictPanel({
-    part,
-    lines: [
-      ['Bolts',          '2 of 2 installed'],
-      ['Orientation',    'correct — spec face out'],
-      ['Surface',        'clean'],
-    ],
+    stepLabel: spec.stepLabel,
+    lines: spec.lines,
     verdictText: 'PASS',
     verdictSymbol: '✓',
     verdictClass: 'pass',
   }));
-  el.appendChild(mk('div', 'cue pass', 'Component assembled to spec'));
-  el.appendChild(mk('div', 'scan-hint', 'Awaiting moderator — next part'));
-  return { el, status: `Part ${part} — PASS` };
+  el.appendChild(mk('div', 'cue pass', spec.cue));
+  el.appendChild(mk('div', 'scan-hint', 'Awaiting moderator — next step'));
+  return { el, status: `${spec.stepLabel} — PASS` };
 }
 
 // ─── Verdict — FAIL ────────────────────────────────────────────────────
 // FAIL adds guidance + a Rework cue. Wearer drives Rework → Instructions in
 // the actual state machine; on the HTML side the operator's controller fires
 // the SCAN message to return to Scanning after the rework.
+const FAIL_SPECS = {
+  A: {
+    stepLabel: 'STEP 1 — A + B',
+    lines: [
+      ['Velcro',   'engaged'],
+      ['Flanges',  'facing inward — inverted'],
+      ['Shape',    'T-form not detected'],
+    ],
+    recover: 'Peel the velcro. Flip B 180°. Re-attach so the flanges face AWAY from each other.',
+  },
+  B: {
+    stepLabel: 'STEP 2 — C ONTO B',
+    lines: [
+      ['String tie', 'secure'],
+      ['Position',   'C joined to B'],
+      ['Flange',     'pointing into center — inverted'],
+    ],
+    recover: 'Untie the string. Flip C 180°. Re-tie so the flange points AWAY from the center.',
+  },
+  C: {
+    stepLabel: 'STEP 3 — D',
+    lines: [
+      ['Velcro',   'engaged'],
+      ['Flange',   "aligned with C's flange — inverted"],
+      ['QR check', 'CF visible (D in wrong orientation)'],
+    ],
+    recover: "Peel the velcro. Flip D 180°. Re-attach so its flange opposes C's flange.",
+  },
+};
+
 export function verdictFailScene({ part }) {
+  const key = String(part).trim().slice(-1).toUpperCase();
+  const spec = FAIL_SPECS[key] || FAIL_SPECS.A;
   const el = mkScene();
   el.appendChild(builderVerdictPanel({
-    part,
-    lines: [
-      ['Bolts',          '2 of 2 installed'],
-      ['Orientation',    'inverted — spec face is inward'],
-      ['Surface',        'clean'],
-    ],
+    stepLabel: spec.stepLabel,
+    lines: spec.lines,
     verdictText: 'FAIL',
     verdictSymbol: '✕',
     verdictClass: 'fail',
   }));
-  el.appendChild(mk('div', 'cue fail', 'Remove the two bolts. Flip the sub-piece 180°. Re-install.'));
+  el.appendChild(mk('div', 'cue fail', spec.recover));
   el.appendChild(mk('div', 'scan-hint', 'Awaiting moderator — rework + re-scan'));
-  return { el, status: `Part ${part} — FAIL` };
+  return { el, status: `${spec.stepLabel} — FAIL` };
 }
 
 // ─── Completion ──────────────────────────────────────────────────────
@@ -114,7 +203,7 @@ export function completeScene({ counts = { pass: 0, fail: 0 }, elapsedMs = 0 }) 
 
   const panel = mk('div', 'panel');
   panel.appendChild(mk('div', 'subheading', 'Session complete'));
-  panel.appendChild(mk('h1', 'heading', `Job 526526 — ${completed} ${completed === 1 ? 'component' : 'components'} passed`));
+  panel.appendChild(mk('h1', 'heading', `Job 526526 — ${completed} of 3 steps passed`));
 
   const grid = mk('div', 'stat-grid');
   grid.appendChild(stat('Passed',   String(counts.pass), 'pass'));
@@ -150,9 +239,9 @@ function stat(label, value, cls) {
   return wrap;
 }
 
-function builderVerdictPanel({ part, lines, verdictText, verdictSymbol, verdictClass }) {
+function builderVerdictPanel({ stepLabel, lines, verdictText, verdictSymbol, verdictClass }) {
   const p = mk('div', 'panel');
-  p.appendChild(mk('div', 'subheading', `PART ${part} — JOB 5519`));
+  p.appendChild(mk('div', 'subheading', `${stepLabel} — JOB 526526`));
   const list = mk('ul');
   for (const [k, v] of lines) {
     const li = mk('li');
