@@ -14,7 +14,7 @@ export function welcomeScene() {
   const el = mkScene();
   const panel = mk('div', 'panel title-only');
   panel.appendChild(mk('div', 'subheading', 'QC Station 3'));
-  panel.appendChild(mk('h1', 'heading', 'Job 4471 — 16-ga bracket inspection'));
+  panel.appendChild(mk('h1', 'heading', 'Job 471471 — 16-ga bracket inspection'));
   panel.appendChild(mk('p', '', 'Three parts in front of you.'));
   panel.appendChild(mk('p', '', 'Three verdicts: pass, rework, scrap.'));
   panel.appendChild(mk('p', '', 'The glasses do the analysis. You make the call.'));
@@ -127,7 +127,7 @@ export function completeScene({ counts = { A: 0, B: 0, C: 0 }, elapsedMs = 0 }) 
 
   const panel = mk('div', 'panel');
   panel.appendChild(mk('div', 'subheading', 'Inspection complete'));
-  panel.appendChild(mk('h1', 'heading', `Job 4471 — ${total} ${total === 1 ? 'part' : 'parts'}`));
+  panel.appendChild(mk('h1', 'heading', `Job 471471 — ${total} ${total === 1 ? 'part' : 'parts'}`));
 
   const grid = mk('div', 'stat-grid');
   grid.appendChild(stat('Pass',   String(counts.A), 'pass'));

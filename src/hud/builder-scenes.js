@@ -15,7 +15,7 @@ export function welcomeScene() {
   const el = mkScene();
   const panel = mk('div', 'panel title-only');
   panel.appendChild(mk('div', 'subheading', 'AR Assembly Trainer'));
-  panel.appendChild(mk('h1', 'heading', 'Job 5519 — bracket sub-assembly'));
+  panel.appendChild(mk('h1', 'heading', 'Job 526526 — bracket sub-assembly'));
   panel.appendChild(mk('p', '', 'Three components to assemble.'));
   panel.appendChild(mk('p', '', 'Attach the sub-piece. Hold up for inspection.'));
   panel.appendChild(mk('p', '', 'Orientation matters — flip if you fail.'));
@@ -114,7 +114,7 @@ export function completeScene({ counts = { pass: 0, fail: 0 }, elapsedMs = 0 }) 
 
   const panel = mk('div', 'panel');
   panel.appendChild(mk('div', 'subheading', 'Session complete'));
-  panel.appendChild(mk('h1', 'heading', `Job 5519 — ${completed} ${completed === 1 ? 'component' : 'components'} passed`));
+  panel.appendChild(mk('h1', 'heading', `Job 526526 — ${completed} ${completed === 1 ? 'component' : 'components'} passed`));
 
   const grid = mk('div', 'stat-grid');
   grid.appendChild(stat('Passed',   String(counts.pass), 'pass'));
