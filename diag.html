@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <base href="/ar-qc/" />
+    <title>Argo Browser Diagnostic</title>
+    <link rel="stylesheet" href="src/style.css" />
+    <style>
+      .diag { max-width: 760px; margin: 0 auto; padding: 2rem 1.5rem; }
+      .diag h2 { margin-top: 2rem; font-size: 1.1rem; color: #cfd8e3; }
+      .kv { font-family: ui-monospace, monospace; font-size: 0.9rem; line-height: 1.55; background: #0a0e14; border: 1px solid #1f2731; border-radius: 10px; padding: 1rem 1.25rem; }
+      .row { display: grid; grid-template-columns: 26ch 1fr; gap: 0.5rem; padding: 0.15rem 0; }
+      .yes { color: #3fb950; }
+      .no { color: #ff6b6b; }
+      .maybe { color: #f7c948; }
+      .copy { margin-top: 0.5rem; }
+      pre { white-space: pre-wrap; word-break: break-all; }
+    </style>
+  </head>
+  <body>
+    <main class="diag">
+      <h1>Argo browser diagnostic</h1>
+      <p style="color:#9aa6b3">Run this page in the Argo browser. Tap "Copy report" or read out the Raw output below.</p>
+
+      <h2>Camera tests</h2>
+      <div class="kv" id="camera-tests">
+        <div class="row"><span>permission state (API)</span><span id="cam-perm">checking…</span></div>
+        <div style="display:flex; flex-wrap:wrap; gap:0.5rem; margin-top:0.7rem">
+          <button class="btn" id="probe-modern">getUserMedia({video:true})</button>
+          <button class="btn" id="probe-facing">getUserMedia(facingMode:env)</button>
+          <button class="btn" id="probe-byid">getUserMedia(deviceId)</button>
+          <button class="btn" id="probe-legacy">legacy navigator.getUserMedia</button>
+        </div>
+        <pre id="cam-log" style="background:#06080c; border:1px solid #1f2731; border-radius:8px; padding:0.7rem; margin-top:0.7rem; max-height:240px; overflow-y:auto; font-size:0.8rem; white-space:pre-wrap; word-break:break-all;"></pre>
+      </div>
+
+      <h2>Browser identity</h2>
+      <div class="kv" id="identity"></div>
+
+      <h2>WebXR Device API</h2>
+      <div class="kv" id="webxr"></div>
+
+      <h2>Permissions Policy (xr-spatial-tracking)</h2>
+      <div class="kv" id="permissions"></div>
+
+      <h2>Other XR globals</h2>
+      <div class="kv" id="other"></div>
+
+      <div class="copy"><button class="btn" id="copy">Copy report</button> <span id="copy-status" style="color:#9aa6b3; margin-left: 0.5rem"></span></div>
+
+      <h2>Raw output</h2>
+      <pre class="kv" id="raw"></pre>
+    </main>
+
+    <script type="module" src="src/diag.js"></script>
+  </body>
+</html>

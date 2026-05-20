@@ -1,0 +1,15 @@
+{
+  "name": "ar-qc-html",
+  "version": "0.2.0",
+  "description": "AR QC Station — browser-based HUD demo for AR smart glasses (HTML / Three.js / WebRTC). Pairs with the native Android sibling project for full camera + ML.",
+  "type": "module",
+  "scripts": {
+    "dev": "vite --host",
+    "build": "vite build",
+    "preview": "vite preview --host"
+  },
+  "devDependencies": {
+    "three": "^0.170.0",
+    "vite": "^5.4.21"
+  }
+}

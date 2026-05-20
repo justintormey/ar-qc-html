@@ -1,0 +1,33 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "ListBucketForSync",
+      "Effect": "Allow",
+      "Action": ["s3:ListBucket"],
+      "Resource": "arn:aws:s3:::justintormey.com",
+      "Condition": {
+        "StringLike": {
+          "s3:prefix": ["ar-qc", "ar-qc/*"]
+        }
+      }
+    },
+    {
+      "Sid": "WriteArQcPrefix",
+      "Effect": "Allow",
+      "Action": [
+        "s3:PutObject",
+        "s3:PutObjectAcl",
+        "s3:DeleteObject",
+        "s3:GetObject"
+      ],
+      "Resource": "arn:aws:s3:::justintormey.com/ar-qc/*"
+    },
+    {
+      "Sid": "InvalidateDemoDistribution",
+      "Effect": "Allow",
+      "Action": ["cloudfront:CreateInvalidation"],
+      "Resource": "arn:aws:cloudfront::__AWS_ACCOUNT_ID__:distribution/E1R27W2LA6BBEH"
+    }
+  ]
+}

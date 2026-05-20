@@ -1,0 +1,387 @@
+/* HUD styles — high-contrast, large-text, see-through-display friendly.
+ *
+ * On the Argo, the display is additive over a transparent waveguide. Dark
+ * pixels are nearly invisible; light pixels read as solid. So our backgrounds
+ * stay mostly black (= transparent on the lens) and our text + borders are
+ * white/saturated for max contrast.
+ */
+
+:root {
+  --hud-bg:        rgba(0, 0, 0, 0.78);
+  --hud-bg-deep:   rgba(0, 0, 0, 0.92);
+  --hud-border:    rgba(255, 255, 255, 0.20);
+  --hud-text:      #ffffff;
+  --hud-dim:       rgba(255, 255, 255, 0.70);
+  --hud-mono:      ui-monospace, "JetBrains Mono", Menlo, monospace;
+  --hud-sans:      ui-sans-serif, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --pass:          #3fff7d;
+  --rework:        #ffd54a;
+  --scrap:         #ff6b6b;
+  --accent:        #6ee7ff;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  background: #000;
+  color: var(--hud-text);
+  font-family: var(--hud-sans);
+  overflow: hidden;
+  width: 100vw;
+  height: 100vh;
+}
+
+/* Top-level container — fills the viewport, owns the scene stack. */
+#hud {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2.5vh 3vw;
+}
+
+#hud .scene {
+  width: 100%;
+  max-width: 920px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+  animation: fadein 220ms ease-out;
+}
+@keyframes fadein {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: none; }
+}
+
+/* Persistent header chip — current scene name */
+#status-chip {
+  position: fixed;
+  top: 1rem;
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: var(--hud-mono);
+  font-size: 0.85rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--hud-dim);
+  background: var(--hud-bg-deep);
+  border: 1px solid var(--hud-border);
+  border-radius: 999px;
+  padding: 0.35rem 1rem;
+  z-index: 100;
+}
+
+/* Connection indicator (top-right) */
+#conn-chip {
+  position: fixed;
+  top: 1rem;
+  right: 1rem;
+  font-family: var(--hud-mono);
+  font-size: 0.75rem;
+  color: var(--hud-dim);
+  background: var(--hud-bg-deep);
+  border: 1px solid var(--hud-border);
+  border-radius: 999px;
+  padding: 0.3rem 0.8rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  z-index: 100;
+}
+#conn-chip .dot {
+  width: 8px; height: 8px; border-radius: 50%;
+  background: var(--rework);
+  box-shadow: 0 0 8px currentColor;
+}
+#conn-chip.connected .dot { background: var(--pass); }
+#conn-chip.error .dot { background: var(--scrap); }
+
+/* Generic HUD panel */
+.panel {
+  background: var(--hud-bg);
+  border: 1px solid var(--hud-border);
+  border-radius: 14px;
+  padding: 1.15rem 1.4rem;
+  backdrop-filter: blur(2px);
+}
+.panel .heading {
+  font-size: 1.7rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  margin: 0 0 0.4rem;
+  color: var(--hud-text);
+}
+.panel .subheading {
+  font-size: 0.95rem;
+  color: var(--hud-dim);
+  margin: 0 0 0.6rem;
+  font-family: var(--hud-mono);
+  letter-spacing: 0.04em;
+}
+.panel p {
+  font-size: 1.2rem;
+  line-height: 1.35;
+  margin: 0.3rem 0;
+}
+.panel ul {
+  list-style: none;
+  padding: 0;
+  margin: 0.5rem 0 0;
+}
+.panel ul li {
+  font-size: 1.05rem;
+  line-height: 1.45;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 1rem;
+  padding: 0.2rem 0;
+  border-bottom: 1px dashed var(--hud-border);
+}
+.panel ul li:last-child { border-bottom: none; }
+.panel ul li .v { color: var(--hud-dim); font-family: var(--hud-mono); }
+.panel.title-only { text-align: center; padding: 2rem 1.5rem; }
+.panel.title-only .heading { font-size: 2rem; }
+
+/* Verdict accent */
+.verdict-row {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  margin-top: 0.8rem;
+  padding-top: 0.8rem;
+  border-top: 1px solid var(--hud-border);
+  font-size: 1.7rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}
+.verdict-row .symbol { font-size: 2.1rem; }
+.verdict-row.pass   { color: var(--pass); }
+.verdict-row.rework { color: var(--rework); }
+.verdict-row.scrap  { color: var(--scrap); }
+
+/* Cue strip — short, bright, action-oriented */
+.cue {
+  text-align: center;
+  font-size: 1.15rem;
+  line-height: 1.35;
+  padding: 0.8rem 1.2rem;
+  border: 2px solid var(--accent);
+  border-radius: 12px;
+  color: var(--accent);
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  animation: pulse 1.6s ease-in-out infinite;
+}
+.cue.pass   { border-color: var(--pass); color: var(--pass); }
+.cue.rework { border-color: var(--rework); color: var(--rework); }
+.cue.scrap  { border-color: var(--scrap); color: var(--scrap); }
+@keyframes pulse {
+  0%, 100% { box-shadow: 0 0 0 0 currentColor; opacity: 1; }
+  50%      { box-shadow: 0 0 24px -8px currentColor; opacity: 0.85; }
+}
+
+/* Side-by-side layout for Part B verdict + 3D ghost */
+.split {
+  display: grid;
+  grid-template-columns: 1fr 280px;
+  gap: 1rem;
+  align-items: stretch;
+}
+@media (max-width: 760px) {
+  .split { grid-template-columns: 1fr; }
+}
+.ghost-panel {
+  background: var(--hud-bg);
+  border: 1px solid var(--hud-border);
+  border-radius: 14px;
+  padding: 0.85rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+}
+.ghost-panel canvas {
+  width: 100%;
+  height: 160px;
+  display: block;
+}
+.ghost-panel .label {
+  font-family: var(--hud-mono);
+  color: var(--accent);
+  font-size: 0.9rem;
+  letter-spacing: 0.06em;
+}
+.ghost-panel .delta {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--rework);
+}
+
+/* Scanning bar — cyan line sweeping top-to-bottom.
+ *
+ * IMPORTANT: the @keyframes animation only runs while the overlay has the
+ * .active class. Without that scoping, the animation auto-played once at
+ * page load and was already finished by the time the JS toggled the class.
+ * With the scoping, removing-then-re-adding .active restarts the loop
+ * cleanly.
+ */
+#scan-overlay {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 80;
+  opacity: 0;
+  transition: opacity 0.18s ease;
+}
+#scan-overlay.active { opacity: 1; }
+
+#scan-overlay .scan-line {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, transparent, var(--accent) 20%, var(--accent) 80%, transparent);
+  box-shadow: 0 0 24px 4px rgba(110, 231, 255, 0.65);
+  top: 0;
+}
+#scan-overlay .scan-haze {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 35%;
+  background: linear-gradient(180deg, rgba(110, 231, 255, 0.22), transparent);
+}
+
+#scan-overlay.active .scan-line {
+  animation: scan-sweep 1.8s ease-in-out infinite;
+}
+#scan-overlay.active .scan-haze {
+  animation: scan-haze 1.8s ease-in-out infinite;
+}
+
+@keyframes scan-sweep {
+  0%   { top: 0%;   opacity: 0; }
+  10%  { opacity: 1; }
+  90%  { opacity: 1; }
+  100% { top: 100%; opacity: 0; }
+}
+@keyframes scan-haze {
+  0%   { top: -35%; opacity: 0; }
+  10%  { opacity: 0.7; }
+  100% { top: 100%; opacity: 0; }
+}
+
+/* Scanning scene — minimal: a borderless frame with four corner brackets.
+ * The cyan sweep line (global #scan-overlay) does all the motion. The
+ * empty space between the brackets is the Argo's see-through view onto
+ * the real workstation. */
+.scene-scanning {
+  align-items: center;
+  text-align: center;
+}
+.cam-frame {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  max-height: 78vh;
+}
+
+/* AR-style corner brackets — cyan, slightly glowing */
+.cam-bracket {
+  position: absolute;
+  width: 72px;
+  height: 72px;
+  border-color: var(--accent);
+  border-style: solid;
+  pointer-events: none;
+  filter: drop-shadow(0 0 6px rgba(110, 231, 255, 0.55));
+}
+.cam-bracket-tl { top: 16px;    left: 16px;    border-width: 3px 0 0 3px; }
+.cam-bracket-tr { top: 16px;    right: 16px;   border-width: 3px 3px 0 0; }
+.cam-bracket-bl { bottom: 16px; left: 16px;    border-width: 0 0 3px 3px; }
+.cam-bracket-br { bottom: 16px; right: 16px;   border-width: 0 3px 3px 0; }
+
+.scan-hint {
+  text-align: center;
+  font-family: var(--hud-mono);
+  font-size: 0.85rem;
+  color: var(--hud-dim);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  margin-top: 0.4rem;
+  opacity: 0.7;
+}
+
+/* Buttons (used on welcome scene only — controller drives everything else) */
+.btn-cta {
+  align-self: center;
+  background: var(--accent);
+  color: #001620;
+  border: 0;
+  padding: 1rem 2rem;
+  font-size: 1.4rem;
+  font-weight: 700;
+  border-radius: 14px;
+  cursor: pointer;
+  letter-spacing: 0.02em;
+}
+.btn-cta:active { transform: scale(0.97); }
+
+/* Pin banner — shown when this page lacks ?transport=webrtc&room=... */
+#pin-banner {
+  position: fixed;
+  bottom: 1rem;
+  left: 50%;
+  transform: translateX(-50%);
+  max-width: 720px;
+  background: rgba(80, 40, 0, 0.92);
+  border: 1px solid var(--rework);
+  color: var(--rework);
+  border-radius: 12px;
+  padding: 0.8rem 1.2rem;
+  font-size: 1rem;
+  text-align: center;
+  z-index: 200;
+  font-family: var(--hud-sans);
+}
+#pin-banner strong { display: block; margin-bottom: 0.3rem; }
+#pin-banner a { color: var(--accent); text-decoration: underline; }
+
+/* Completion stats grid */
+.stat-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+  margin: 1rem 0 0;
+}
+.stat-grid .stat {
+  text-align: center;
+  padding: 1rem;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid var(--hud-border);
+  border-radius: 14px;
+}
+.stat .label {
+  font-family: var(--hud-mono);
+  font-size: 0.95rem;
+  letter-spacing: 0.1em;
+  color: var(--hud-dim);
+}
+.stat .value {
+  font-size: 2.4rem;
+  font-weight: 700;
+  margin-top: 0.4rem;
+}
+.stat.pass .value { color: var(--pass); }
+.stat.rework .value { color: var(--rework); }
+.stat.scrap .value { color: var(--scrap); }
+.cycle-time {
+  text-align: center;
+  margin-top: 1.2rem;
+  font-family: var(--hud-mono);
+  font-size: 1.15rem;
+  color: var(--hud-dim);
+  letter-spacing: 0.06em;
+}

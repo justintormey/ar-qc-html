@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <base href="/ar-qc/" />
+    <title>AR QC Station Demo</title>
+    <link rel="stylesheet" href="/src/style.css" />
+  </head>
+  <body>
+    <main class="landing">
+      <header class="brand">AR QC Demo</header>
+      <h1>AR QC Station</h1>
+      <p class="subtitle">Job 4471 — 16-ga bracket inspection (demo data)</p>
+
+      <section class="room-bar">
+        <label for="room-pin">Room PIN <span class="req">6–8 digits required</span></label>
+        <input id="room-pin" type="text" inputmode="numeric" pattern="\d{6,8}" maxlength="8" placeholder="e.g. 471471" />
+        <span id="pin-status" class="pin-status">Enter 6 digits to enable cross-device WebRTC</span>
+      </section>
+
+      <nav class="mode-grid">
+        <a href="demo.html" class="card demo" data-link="demo">
+          <span class="role">Headset</span>
+          <h2>Start Demo</h2>
+          <p>Open this on the AR glasses. A fullscreen HUD shows the verdict for each part as the operator taps A/B/C on the controller. The see-through lenses overlay the HUD onto the real parts on the table.</p>
+        </a>
+        <a href="control.html" class="card control" data-link="control">
+          <span class="role">Operator</span>
+          <h2>Controller</h2>
+          <p>Open on a second device (laptop or phone). Three big A/B/C buttons trigger the verdicts in the headset over WebRTC.</p>
+        </a>
+        <a href="diag.html" class="card setup" data-link="diag">
+          <span class="role">Diagnostic</span>
+          <h2>Browser check</h2>
+          <p>Inspect what the current browser exposes (WebXR, RTC, BroadcastChannel, camera). Use if anything misbehaves.</p>
+        </a>
+      </nav>
+
+      <footer class="hints">
+        <details>
+          <summary>Order of operations</summary>
+          <ol>
+            <li>Set a Room PIN above. Both devices use the same PIN to pair over WebRTC.</li>
+            <li>On the headset: open the <strong>Start Demo</strong> card. The HUD loads with the Welcome panel.</li>
+            <li>On a second device: open the <strong>Controller</strong> card. Wait for the status to show <code>connected</code>.</li>
+            <li>The participant picks up Part A &rarr; operator taps <strong>PART A</strong>. The headset plays the PASS verdict overlay.</li>
+            <li>Repeat for Part B (REWORK + 3D ghost) and Part C (SCRAP). Then the Completion summary.</li>
+          </ol>
+        </details>
+      </footer>
+    </main>
+    <script type="module" src="/src/landing.js"></script>
+  </body>
+</html>

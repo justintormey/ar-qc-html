@@ -1,0 +1,10 @@
+node_modules
+dist
+.vercel
+.DS_Store
+*.log
+
+# Internal planning + handoff notes — kept under ~/.claude/planning/, never tracked
+planning/
+notes/
+MORNING-BRIEFING.md
