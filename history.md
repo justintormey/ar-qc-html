@@ -81,6 +81,10 @@ Multiple early bug reports turned out to be the same root cause: someone opened 
 - Wire a real polling endpoint as a `BroadcastChannel`-vs-`WebRTC` fallback for restrictive networks
 - Persist the Room PIN across reloads (currently only landing remembers via localStorage; demo + control require the query string)
 
+### Designed but not yet implemented
+
+- **Orientation-alignment CV** — design lives in the Android sibling at [`docs/future-enhancements/cv-orientation-alignment.md`](https://github.com/justintormey/ar-qc-android/blob/main/docs/future-enhancements/cv-orientation-alignment.md). HTML side: wire `BarcodeDetector` + corner-point rotation math into `src/hud/camera.js` (Chrome/Edge only; Argo Firefox stays operator-driven). Port the `StepRule` shape into `src/builder.js` so both clients enforce identical alignment rules.
+
 ## Related
 
 - [`ar-qc-android`](https://github.com/justintormey/ar-qc-android) — Kotlin/Compose port with real on-device camera + ML Kit QR detection. Same WebRTC protocol, same controller.
