@@ -1,5 +1,9 @@
 // Renders an auto-rotating L-profile bracket into a canvas using Three.js.
-// Used as the "target profile" reference next to the Part B verdict panel.
+// Used as a decorative reference-geometry hologram next to the Part B
+// (REWORK) verdict panel. The L-shape is a generic "this is what spec
+// looks like" callout — not tied to the specific 3D-printed part's
+// geometry. File name + shape are historical from the sheet-metal era of
+// the demo; kept because the visual still reads as a useful reference.
 
 import * as THREE from 'three';
 

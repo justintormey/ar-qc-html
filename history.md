@@ -4,7 +4,12 @@ A short record of how the demo got to its current shape — what was tried, what
 
 ## Project overview
 
-A browser-based AR "quality-control inspection station" for AR smart glasses with see-through waveguide displays. One operator on a laptop drives an inspection flow; one participant wearing the headset sees the verdict overlays. Three small metal parts on a table represent PASS / REWORK / SCRAP work-pieces. Verdicts are driven via WebRTC by the operator, not by real computer vision (the [Android sibling project](https://github.com/justintormey/ar-qc-android) adds real CV via ML Kit).
+Two browser-based AR demos served as one static site, for AR smart glasses with see-through waveguide displays.
+
+- **AR QC Station** — quality-control inspection. Three 3D-printed parts on a table represent canonical PASS / REWORK / SCRAP examples. Operator drives verdicts via the controller; the Android sibling adds real ML Kit CV.
+- **AR Builder** — assembly training, added as a sibling later in the project. Four 3D-printed angle brackets joined across three steps with velcro and string. Operator drives via six PASS/FAIL × A/B/C buttons; the Android sibling reads bracket-face QRs (including a compound `BP` AND `CP` check on step 3) directly from the camera.
+
+Both demos share the WebRTC transport, the Room PIN landing page, the deploy pipeline, and the HUD primitives. They run under separate Room PINs (`471471` for QC, `526526` for Builder) so a single Argo can be paired with either controller without cross-talk.
 
 ## Architecture, at a glance
 
@@ -64,10 +69,11 @@ Multiple early bug reports turned out to be the same root cause: someone opened 
 
 ## Current state
 
-- Five scenes in the demo state machine: `Welcome`, `Scanning`, `Verdict A/B/C`, `Complete`.
-- Controller has six buttons: SCAN (primary), PART A/B/C, End Demo, Reset.
-- ~9 source files under `src/` (excluding HTML entries).
-- Production build is ~480 KB total, of which ~470 KB is Three.js (used only for the small L-profile canvas in the Verdict-B scene; a future optimization would defer-load that chunk).
+- **QC state machine** (`src/demo.js`): five scenes — `Welcome` / `Scanning` / `VerdictA` / `VerdictB` / `VerdictC` / `Complete`.
+- **Builder state machine** (`src/builder.js`): six scenes — `Welcome` / `Instructions(A|B|C)` / `Scanning` / `VerdictPass(part)` / `VerdictFail(part)` / `Complete`. Added as a sibling demo after QC shipped.
+- QC controller has six buttons: SCAN (primary), PART A/B/C, End Demo, Reset. Builder controller has eight: SCAN, PASS A/B/C, FAIL A/B/C, End Demo, Reset.
+- Five HTML entry points (`index.html`, `demo.html`, `control.html`, `builder.html`, `builder-control.html`) + `diag.html`. Source files in `src/` cover the state machines, controllers, transport, and HUD scenes.
+- Production build is ~480 KB total, of which ~470 KB is Three.js (used only for the small reference-geometry canvas on the QC Verdict-B scene; a future optimization would defer-load that chunk so only QC's REWORK path pays the bundle cost).
 
 ## Unfinished work
 

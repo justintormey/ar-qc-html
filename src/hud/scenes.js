@@ -15,7 +15,7 @@ export function welcomeScene() {
   const panel = mk('div', 'panel title-only');
   panel.appendChild(mk('div', 'subheading', 'QC Station 3'));
   panel.appendChild(mk('h1', 'heading', 'Job 471471 — additive part inspection'));
-  panel.appendChild(mk('p', '', 'Three parts in front of you.'));
+  panel.appendChild(mk('p', '', 'Three 3D-printed parts in front of you.'));
   panel.appendChild(mk('p', '', 'Three verdicts: pass, rework, scrap.'));
   panel.appendChild(mk('p', '', 'The glasses do the analysis. You make the call.'));
 
@@ -61,7 +61,7 @@ export function partAScene() {
   return { el, status: 'Part A — PASS' };
 }
 
-// ─── Part B — REWORK + 3D L-profile ────────────────────────────────────
+// ─── Part B — REWORK + reference-geometry hologram ─────────────────────
 export function partBScene() {
   const el = mkScene();
 
@@ -166,7 +166,7 @@ function stat(label, value, cls) {
 
 function verdictPanel({ part, lines, verdictText, verdictSymbol, verdictClass }) {
   const p = mk('div', 'panel');
-  p.appendChild(mk('div', 'subheading', `PART ${part} — JOB 4471`));
+  p.appendChild(mk('div', 'subheading', `PART ${part} — JOB 471471`));
   const list = mk('ul');
   for (const [k, v] of lines) {
     const li = mk('li');

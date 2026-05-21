@@ -1,8 +1,11 @@
-# AR QC Station — HTML demo
+# AR QC Station + AR Builder — HTML demos
 
-A browser-based AR demonstration of a "quality-control inspection station" for use on AR smart glasses with see-through waveguide displays (built and tested on a Digilens Argo, but works on any modern browser with WebRTC). One operator runs a laptop **controller**; another participant wears the **headset** showing a fullscreen HUD. As the participant picks up small 3D-printed parts on the table, the operator taps `PART A` / `PART B` / `PART C` and the headset plays the matching inspection verdict — PASS, REWORK, or SCRAP — with supporting detail panels and a sweeping cyan scan-line.
+Two browser-based AR demonstrations served as a single static site, for use on AR smart glasses with see-through waveguide displays (built and tested on a Digilens Argo, but works on any modern browser with WebRTC). Each demo pairs an operator's laptop **controller** with a participant's **headset** over a WebRTC room.
 
-There's a [native Android sibling project](https://github.com/justintormey/ar-qc-android) (`ar-qc-android`) that ports this same flow to a Kotlin/Compose APK with real on-device camera + ML Kit QR detection. The two clients can interoperate over the same WebRTC room.
+- **AR QC Station** — quality-control inspection. Three 3D-printed parts on the table represent canonical PASS / REWORK / SCRAP examples (smooth vs. warped vs. failed prints). Operator taps `PART A` / `PART B` / `PART C` and the headset plays the matching verdict — supporting detail rows (surface finish, vent openings, warp, layer adhesion), a "place in zone" cue, and a sweeping cyan scan-line.
+- **AR Builder** — assembly training. Four 3D-printed angle brackets joined across three steps using velcro and string. Operator drives via six PASS/FAIL × A/B/C buttons (or wearer drives via the in-headset scroll wheel on the Android version). The headset shows per-step instructions, scanning, and step-specific verdict panels.
+
+There's a [native Android sibling project](https://github.com/justintormey/ar-qc-android) (`ar-qc-android`) that ports both flows to Kotlin/Compose APKs with real on-device camera + ML Kit QR detection (including a compound BP+CP QR check for Builder step 3). The HTML and Android clients interoperate over the same WebRTC rooms.
 
 **Live:** [https://demo.justintormey.com/ar-qc/](https://demo.justintormey.com/ar-qc/)
 
@@ -10,26 +13,37 @@ There's a [native Android sibling project](https://github.com/justintormey/ar-qc
 
 ## What you see
 
-The demo is three web pages that share a state machine over WebRTC.
+Five web pages share two state machines (one for QC, one for Builder) over WebRTC.
 
 | URL | Audience | What it does |
 |---|---|---|
-| `/ar-qc/` | Either device | Landing page. Enter a 6–8 digit Room PIN; both devices share it. |
-| `/ar-qc/demo.html` | Headset (the AR glasses) | Fullscreen HUD: Welcome → Scanning → Verdict A/B/C → Complete. |
-| `/ar-qc/control.html` | Operator (laptop or phone) | A big SCAN button + three colored verdict buttons + End Demo. |
+| `/ar-qc/` | Either device | Landing page with two cards (QC, Builder) + Room PIN input. |
+| `/ar-qc/demo.html` | QC · Headset | Fullscreen HUD: Welcome → Scanning → Verdict A/B/C → Complete. |
+| `/ar-qc/control.html` | QC · Operator | SCAN button + three colored verdict buttons + End Demo. Default PIN `471471`. |
+| `/ar-qc/builder.html` | Builder · Headset | Fullscreen HUD: Welcome → Instructions → Scanning → VerdictPass/Fail → Complete (six scenes). |
+| `/ar-qc/builder-control.html` | Builder · Operator | SCAN + six PASS/FAIL × A/B/C buttons + End / Reset. Default PIN `526526`. |
 | `/ar-qc/diag.html` | Either | Capability check (WebXR / RTC / camera) for triage. |
 
-The flow:
+### QC flow
 
-1. Operator opens the landing page on the laptop, types a Room PIN (e.g. `471471`), opens the **Controller** card.
-2. Participant opens the landing page on the headset, types the same PIN, opens **Start Demo**.
+1. Operator opens the landing page on the laptop, types Room PIN `471471`, opens the **QC Controller** card.
+2. Participant opens the landing page on the headset (or on the Android sibling, opens the `QC` app), types the same PIN, opens **Start QC**.
 3. Both devices show a green "connected" pill at the top-right within ~5 seconds.
 4. Operator taps **SCAN** → headset shows the scan animation (cyan corner brackets + sweeping line).
-5. Participant picks up any of the three 3D-printed parts on the table.
+5. Participant picks up any of the three 3D-printed parts.
 6. Operator decides which verdict applies (A / B / C) and taps the matching button → headset shows the verdict overlay.
 7. Repeat until done; tap **End Demo** for a summary.
 
-Reset goes back to Welcome.
+### Builder flow
+
+1. Operator opens the landing page, types Room PIN `526526`, opens **Builder Controller**.
+2. Participant opens **Start Builder** on the headset with the same PIN.
+3. Operator taps **SCAN** → headset enters Step 1 instructions (attach A + B with velcro, T-shape).
+4. Participant assembles, then operator taps **PASS A** or **FAIL A** (or, on the Android sibling, the camera reads the AP/AF QR exposed by the orientation chosen).
+5. Repeat for Step 2 (C-onto-B with string, BP/BF) and Step 3 (D opposing C, CP/CF — Android requires both `BP` and `CP` visible for PASS).
+6. Operator taps **End Demo** → headset shows session summary.
+
+Reset goes back to Welcome on either demo.
 
 ---
 
@@ -37,28 +51,33 @@ Reset goes back to Welcome.
 
 ```
 ar-qc-html/
-├── index.html              # Landing page with the Room PIN input
-├── demo.html               # Headset HUD entry point
-├── control.html            # Operator controller entry point
-├── diag.html               # Browser capability diagnostic
-├── vite.config.js          # Multi-page Vite config (base path = /ar-qc/)
+├── index.html               # Landing page with QC + Builder cards + Room PIN input
+├── demo.html                # QC headset HUD entry point
+├── control.html             # QC operator controller entry point
+├── builder.html             # Builder headset HUD entry point
+├── builder-control.html     # Builder operator controller entry point
+├── diag.html                # Browser capability diagnostic
+├── vite.config.js           # Multi-page Vite config (base path = /ar-qc/)
 ├── package.json
 ├── src/
-│   ├── style.css           # Landing + controller + diagnostic page styles
-│   ├── landing.js          # Room PIN input; rewrites card links with ?transport=webrtc&room=…
-│   ├── demo.js             # Scene state machine (Welcome → Scanning → Verdict → Complete)
-│   ├── control.js          # Controller button wiring + connection pill
-│   ├── diag.js             # Capability probe + camera probe buttons
+│   ├── style.css            # Landing + controller + diagnostic page styles
+│   ├── landing.js           # Room PIN input; rewrites card links with ?transport=webrtc&room=…
+│   ├── demo.js              # QC scene state machine (Welcome → Scanning → Verdict → Complete)
+│   ├── builder.js           # Builder scene state machine (Welcome → Instructions → Scanning → Verdict → Complete)
+│   ├── control.js           # QC controller button wiring + connection pill
+│   ├── builder-control.js   # Builder controller wiring (6 verdict buttons + SCAN + End/Reset)
+│   ├── diag.js              # Capability probe + camera probe buttons
 │   ├── hud/
-│   │   ├── style.css       # HUD-specific styles (corner brackets, scan line, panels)
-│   │   ├── scenes.js       # DOM-rendered scenes for each demo state
-│   │   ├── l-profile.js    # Three.js mini-canvas for the REWORK scene's L-profile reference
-│   │   └── camera.js       # Best-effort getUserMedia (kept for future browsers; currently no-op on the Argo)
+│   │   ├── style.css        # HUD-specific styles (corner brackets, scan line, panels)
+│   │   ├── scenes.js        # QC DOM-rendered scenes
+│   │   ├── builder-scenes.js # Builder DOM-rendered scenes (per-step instructions + verdicts)
+│   │   ├── l-profile.js     # Three.js mini-canvas — decorative reference-geometry hologram on the QC REWORK scene
+│   │   └── camera.js        # Best-effort getUserMedia (kept for future browsers; currently no-op on the Argo)
 │   └── transport/
-│       ├── state-bus.js    # Pub/sub abstraction over BroadcastChannel | WebRTC | polling
+│       ├── state-bus.js     # Pub/sub abstraction over BroadcastChannel | WebRTC | polling
 │       └── webrtc-transport.js  # WebRTC peer + AWS API Gateway WebSocket signaling
 ├── infra/
-│   ├── README.md           # One-time AWS setup (IAM role + S3 prefix + CloudFront invalidations)
+│   ├── README.md            # One-time AWS setup (IAM role + S3 prefix + CloudFront invalidations)
 │   ├── iam-trust-policy.json
 │   └── iam-permissions-policy.json
 └── .github/workflows/deploy.yml   # GHA: on push to main, build + sync to S3 + invalidate CloudFront
@@ -66,13 +85,13 @@ ar-qc-html/
 
 ### What's where, conceptually
 
-- **`src/transport/`** is the layer that gets a message from the operator's tap to the headset's screen. Three implementations live behind one interface (`createStateBus`): `BroadcastChannel` (same-device dev), `polling` (HTTP-based fallback), and `WebRTC` (cross-device production). The HTML pages don't know or care which one is in use — the URL query param picks it.
+- **`src/transport/`** is the layer that gets a message from the operator's tap to the headset's screen. Three implementations live behind one interface (`createStateBus`): `BroadcastChannel` (same-device dev), `polling` (HTTP-based fallback), and `WebRTC` (cross-device production). The HTML pages don't know or care which one is in use — the URL query param picks it. Shared by both QC and Builder.
 
-- **`src/hud/`** is everything that draws inside the headset's view: corner brackets, scan animation, verdict panels, the 3D L-profile model. Pure DOM + a small Three.js canvas for the L-profile.
+- **`src/hud/`** is everything that draws inside the headset's view: corner brackets, scan animation, verdict panels. Pure DOM + a small Three.js canvas (`l-profile.js`) that renders a decorative reference-geometry hologram on the QC REWORK scene.
 
-- **`src/demo.js`** holds the state machine: there are exactly five states (`Welcome` / `Scanning` / `VerdictA` / `VerdictB` / `VerdictC` / `Complete`) and transitions are driven entirely by messages from the bus. Same shape as the Android port.
+- **`src/demo.js`** owns the QC state machine (5 distinct states: `Welcome` / `Scanning` / `VerdictA` / `VerdictB` / `VerdictC` / `Complete`). **`src/builder.js`** owns the Builder state machine (6 states: `Welcome` / `Instructions(A|B|C)` / `Scanning` / `VerdictPass(part)` / `VerdictFail(part)` / `Complete`). Both are driven by `BusMessage`s from the bus; same shapes as the Android port.
 
-- **`src/control.js`** owns the operator's six buttons, the connection pill, and the event log.
+- **`src/control.js`** + **`src/builder-control.js`** own their controllers' button wiring, connection pills, and event logs.
 
 ---
 
@@ -98,16 +117,18 @@ For cross-device (controller on laptop, demo on headset), set a 6–8 digit PIN 
 
 ## State-bus message protocol
 
-The shape both clients (HTML and Android) speak over the DataChannel:
+The shape both clients (HTML and Android) and both demos (QC and Builder) speak over the DataChannel. Builder-specific shapes co-exist with QC shapes; clients that don't recognize a `kind` simply ignore it.
 
 ```js
-{ kind: 'scan' }                         // operator pressed SCAN
-{ kind: 'verdict', part: 'A'|'B'|'C' }   // operator pressed a verdict
-{ kind: 'complete' }                     // operator pressed End Demo
-{ kind: 'reset' }                        // operator pressed Reset
-{ kind: 'ready' }                        // either client just loaded
-{ kind: 'scene', name: '...' }           // telemetry: scene transition on the demo
-{ kind: 'verdict-shown', part: '...' }   // telemetry: verdict actually displayed
+{ kind: 'scan' }                                              // operator pressed SCAN
+{ kind: 'verdict', part: 'A'|'B'|'C' }                        // QC verdict
+{ kind: 'builder-verdict', part: 'A'|'B'|'C', result: 'pass'|'fail' }  // Builder verdict
+{ kind: 'next' }                                              // Builder: advance to next step
+{ kind: 'complete' }                                          // operator pressed End Demo
+{ kind: 'reset' }                                             // operator pressed Reset
+{ kind: 'ready' }                                             // either client just loaded
+{ kind: 'scene', name: '...' }                                // telemetry: scene transition on the demo
+{ kind: 'verdict-shown', part: '...', result?: 'pass'|'fail' } // telemetry: verdict actually displayed
 ```
 
 Every message also gets a `_seq` field (timestamp-derived) to dedupe across retries.
