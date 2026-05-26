@@ -4,6 +4,9 @@ dist
 .DS_Store
 *.log
 
+# Local deploy config (AWS profile + CloudFront ID)
+.local/
+
 # Internal planning + handoff notes — kept under ~/.claude/planning/, never tracked
 planning/
 notes/
