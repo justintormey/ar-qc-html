@@ -1,4 +1,6 @@
 #!/usr/bin/env bash
+# >> FALLBACK ONLY <<  Primary deploy is CI-on-push: .github/workflows/deploy.yml (GitHub Actions OIDC).
+# Push to main to deploy. Do NOT make this the canonical path, add AWS keys, or change the deploy method. See CLAUDE.md "Deployment".
 # Local deploy for ar-qc-html -> S3 + CloudFront.
 # Replaces the archived half-bakery deployer (retired 2026-05-25).
 #
