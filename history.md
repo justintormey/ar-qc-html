@@ -22,6 +22,14 @@ Both demos share the WebRTC transport, the Room PIN landing page, the deploy pip
 
 ## Decisions worth recording
 
+### Privacy-respecting analytics added (2026-06-10)
+
+The demo now reports to the shared `demo.justintormey.com` Plausible site. We added a self-hosted Plausible Community Edition snippet to the root `index.html` head — `data-domain="demo.justintormey.com"`, enhanced variant `https://ugh.8a9s.com/js/script.file-downloads.outbound-links.js`. The demo is served at `demo.justintormey.com/ar-qc/`, a subpath of that single site.
+
+This is a Vite multi-page app (five HTML entry points). We instrumented **only the root `index.html`** (the landing/Room-PIN page) — the headset/controller pages (`demo.html`, `control.html`, `builder.html`, `builder-control.html`, `diag.html`) are operator/headset surfaces reached through the PIN flow, not public entry points, so they were left untouched.
+
+**Enhanced variant** chosen deliberately: it's a showcase demo, so outbound clicks (to the GitHub repo / `ar-qc-android` sibling) and any downloads are exactly the engagement signals worth capturing. **Privacy:** self-hosted Plausible CE on the owner's Mac Mini M1 home server (`jmini.local`, Docker/Colima, exposed via Cloudflare Tunnel at `https://ugh.8a9s.com`) — cookieless, no PII, GDPR-friendly, no consent banner. (Docs-only entry; the snippet itself was added/pushed in a prior commit.)
+
 ### WebXR was the original plan; we pivoted to a flat HUD
 
 The first iteration used Three.js + `immersive-ar` for world-locked AR overlays anchored to the conference table via hit-test. We even built setup-mode anchor placement, zone-based gaze triggering, and 3D ghost models.
